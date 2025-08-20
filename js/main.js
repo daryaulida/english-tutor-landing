@@ -23,3 +23,44 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
+
+
+(function(){
+  const modal = document.getElementById('contactChooser');
+  if(!modal) return;
+
+  const sheet = modal.querySelector('.contact-chooser__sheet');
+  // Кнопка "Записаться на пробное..." + все кнопки "Записаться" в карточках услуг
+  const triggers = document.querySelectorAll('#trialBtn, .service-card__btn');
+  if(!triggers.length || !sheet) return;
+
+  let lastFocus;
+
+  function openModal(e){
+    e.preventDefault();
+    lastFocus = document.activeElement;
+    modal.hidden = false;
+    sheet.focus();
+    document.addEventListener('keydown', onKey);
+  }
+
+  function closeModal(){
+    modal.hidden = true;
+    document.removeEventListener('keydown', onKey);
+    if (lastFocus) lastFocus.focus();
+  }
+
+  function onKey(e){
+    if(e.key === 'Escape') closeModal();
+  }
+
+  // навешиваем на все кнопки
+  triggers.forEach(btn => btn.addEventListener('click', openModal));
+
+  // закрытие по крестику/элементам с data-close и по фону, если ему задан data-close
+  modal.addEventListener('click', (e)=>{
+    if (e.target.hasAttribute('data-close') || e.target.closest('[data-close]')) return closeModal();
+    if (e.target.classList.contains('contact-chooser__backdrop')) return closeModal();
+  });
+})();

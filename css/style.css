@@ -73,13 +73,36 @@ a{color:inherit; text-decoration:none}
 .header__spacer{display:none;}    /* убираем «растяжку» справа */
 .header__nav{flex:0 0 auto; margin-left:auto;} /* меню вправо */
 
-.header__socials{display:flex; align-items:center; gap:8px}
-.header__social{
-  width:32px; height:32px; border-radius:50%;
-  display:inline-flex; align-items:center; justify-content:center;
-  background:#F3F3F3; color:#111; transition:filter .2s, transform .2s;
+.header__socials{
+  display:flex; align-items:center; gap:10px;
 }
-.header__social:hover{filter:brightness(.95); transform:translateY(-1px)}
+
+/* без круга, больше сама иконка */
+.header__social{
+  display:inline-flex; align-items:center; justify-content:center;
+  padding:6px;                 /* большой кликабельный хитбокс */
+  background:transparent;      /* убрали серый фон */
+  border-radius:8px;           /* можно 0, если не нужно вовсе */
+  color:#111; text-decoration:none;
+  transition:transform .15s ease, background-color .15s ease;
+}
+
+/* сами иконки (svg/i/img) делаем крупнее */
+.header__social svg,
+.header__social i,
+.header__social img{
+  width:28px; height:28px;     /* было 20–24? стало крупнее */
+  display:block;
+}
+
+/* лёгкий ховер (если совсем без фона — удалите background) */
+.header__social:hover{
+  transform:translateY(-1px) scale(1.06);
+  background:rgba(0,0,0,.04);  /* можно удалить, тогда фона не будет вовсе */
+}
+.header__social:active{ transform:translateY(0) scale(0.98); }
+.header__social:focus-visible{ outline:2px solid currentColor; outline-offset:2px; }
+
 
 .header__nav{display:flex; align-items:center; gap:12px}
 .header__burger{display:inline-flex; flex-direction:column; gap:4px; padding:8px; background:none; border:0; cursor:pointer}
@@ -94,6 +117,68 @@ a{color:inherit; text-decoration:none}
 
 /* номер телефона не используем */
 .header__phone,.header__phone-text{display:none}
+
+
+/* телефон — перед меню, прижимает связку "телефон+бургер" вправо */
+.header__tel{ flex:0 0 auto; margin-left:auto; }
+
+.header__tel-link{
+  display:inline-block; white-space:nowrap;
+  font-weight:600; font-size:16px; line-height:1;
+  color:#111; text-decoration:none;
+  padding:4px 6px; border-radius:8px;
+  transition:background-color .15s, transform .15s;
+}
+.header__tel-link:hover{ background:rgba(0,0,0,.04); transform:translateY(-1px); }
+.header__tel-link:active{ transform:translateY(0) scale(.98); }
+
+/* маленький отступ между номером и бургером/меню */
+.header__nav{ flex:0 0 auto; margin-left:8px; }
+
+/* если на очень узких экранах не влезает — слегка уменьшаем номер */
+@media (max-width: 768px){
+  .header__inner{ gap:6px; }
+  .header__nav{ margin-left:4px; }
+}
+
+/* ≤425px: ещё чуть меньше */
+@media (max-width: 425px){
+  .header__inner{ gap:4px; }
+  .header__nav{ margin-left:2px; }
+}
+
+/* очень узкие (твоя настройка) */
+@media (max-width:360px){
+  .header__tel-link{ font-size:14px; padding:3px 4px; }
+}
+
+
+@media (max-width: 375px){
+  .header__inner{ gap:4px; }     /* общий промежуток меньше */
+  .header__nav{ margin-left:2px; }/* зазор между номером и бургером */
+
+  .header__tel-link{
+    font-size:13px;               /* было 16 → стало 13 */
+    padding:2px 4px;              /* компактнее хитбокс */
+  }
+
+ 
+}
+
+
+
+@media (max-width: 768px){
+  .header__socials{ gap:6px; }   /* было 10px */
+}
+
+@media (max-width: 425px){
+  .header__socials{ gap:4px; }   /* ещё меньше */
+}
+
+@media (max-width: 375px){
+  .header__socials{ gap:2px; }   /* самый плотный ряд */
+}
+
 
 /* ===== Кнопки ===== */
 .btn{
@@ -362,6 +447,17 @@ a{color:inherit; text-decoration:none}
 }
 
 
+@media (max-width: 2560px){
+  .benefits__lead{
+    max-width: none;   /* снимаем ограничение типа 62ch */
+    width: 100%;
+  }
+}
+
+/* чуть просторнее строки на очень узких */
+@media (max-width: 480px){
+  .benefits__lead{ line-height: 1.4; }
+}
 
 
 
@@ -402,16 +498,24 @@ a{color:inherit; text-decoration:none}
   grid-template-rows: auto 1fr;
 }
 
+/* === ФОТО БЕЗ ОБРЕЗКИ ФИКС-ВЫСОТОЙ ===
+   Высоту задаём контейнером, не img!
+*/
+.service-card__media{
+  overflow:hidden;
+  aspect-ratio: 4 / 3;            /* базово повыше кадр */
+}
 .service-card__media img{
   width:100%;
-  height: 220px;
-  object-fit: cover;
-  object-position: 50% 50%;
+  height:100%;
+  object-fit:cover;
+  object-position:50% 50%;
   display:block;
 }
 
-/* у второй карточки поднимаем кадр — не режет голову */
-.service-card__media--top img{ object-position: 50% 20%; }
+/* если конкретному фото нужно поднять фокус — добавь класс к wrapper:
+   <div class="service-card__media service-card__media--top">… */
+.service-card__media--top img{ object-position:50% 20%; }
 
 .service-card__body{
   padding: 16px;
@@ -439,13 +543,15 @@ a{color:inherit; text-decoration:none}
   text-align: center;
 }
 
-/* ≥768 — немного воздуха, крупнее фото */
+/* ≥768 — больше воздуха, кадр ещё выше (меньше «режет» на планшете) */
 @media (min-width:768px){
   .services{ padding: 68px 0; }
-  .service-card__media img{ height: 240px; }
+  .service-card__media{ aspect-ratio: 3 / 2; }   /* выше, чем 16:9 */
+  /* при желании можно чуть сместить фокус кверху на планшете:
+     .service-card__media img{ object-position:50% 35%; } */
 }
 
-/* ≥960 — три колонки, ровные карточки, единая линия кнопок */
+/* ≥960 — три колонки, ровные карточки */
 @media (min-width:960px){
   .services{ padding: 80px 0; }
   .services__grid{
@@ -454,6 +560,82 @@ a{color:inherit; text-decoration:none}
     align-items: stretch;          /* одинаковая высота карточек */
   }
   .service-card{ height: 100%; }
-  .service-card__media img{ height: 200px; }
-  .service-card__btn{ width: 100%; } /* оставляем кнопку во всю ширину и на десктопе */
+  .service-card__media{ aspect-ratio: 16 / 9; }  /* на широких можно шире кадр */
+  .service-card__btn{ width: 100%; }
+}
+
+/* Цена: всё чёрным и жирным, без «разделения» оттенками */
+.service-card__price{
+  margin:6px 0 10px;
+  font-weight:700;
+  font-size:18px;
+  line-height:1.2;
+  color:#111;
+}
+.service-card__price .service-card__per,
+.service-card__price .service-card__note{
+  font-weight:700;
+  color:#111;
+  margin-left:8px;
+}
+
+/* чуть компактнее на узких */
+@media (max-width: 375px){
+  .service-card__price{ font-size:16px; margin:4px 0 8px; }
+}
+
+
+/* На широких экранах оставляем ограничение 62ch,
+   а на планшетах и меньше — растягиваем текст на всю ширину */
+@media (max-width: 2560px){
+  .services__lead{
+    max-width: none;     /* снимаем узкое ограничение */
+    width: 100%;
+  }
+}
+
+/* Чтобы смотрелось аккуратнее на очень узких */
+@media (max-width: 480px){
+  .services__lead{
+    line-height: 1.4;
+  }
+}
+
+
+
+/* overlay */
+.contact-chooser[hidden]{ display:none; }
+.contact-chooser{ position:fixed; inset:0; z-index:1000; }
+.contact-chooser__backdrop{ position:absolute; inset:0; background:rgba(0,0,0,.35); }
+
+/* sheet */
+.contact-chooser__sheet{
+  position: absolute; left:50%; transform:translateX(-50%);
+  bottom:16px; width:min(520px, calc(100% - 24px));
+  background:#fff; border-radius:16px; padding:16px; box-shadow:0 10px 30px rgba(0,0,0,.2);
+}
+.contact-chooser__title{ margin:0 0 12px; font-size:18px; font-weight:700; text-align:center; }
+.contact-chooser__close{
+  position:absolute; top:8px; right:8px; width:32px; height:32px;
+  border:0; background:transparent; font-size:22px; line-height:32px; cursor:pointer;
+}
+
+.contact-chooser__btn{
+  display:flex; align-items:center; justify-content:center;
+  width:100%; padding:12px 14px; border-radius:12px;
+  font-weight:700; text-decoration:none; color:#111; background:#f6f6f6;
+  transition:transform .15s, background-color .15s;
+  margin-top:8px;
+}
+.contact-chooser__btn:hover{ background:#eee; transform:translateY(-1px); }
+.contact-chooser__btn:active{ transform:translateY(0) scale(.98); }
+
+/* брендовые акценты (опционально) */
+.contact-chooser__btn--tel{ background:#FFEFD4; }
+.contact-chooser__btn--wa{ background:#E8FFF0; }
+.contact-chooser__btn--viber{ background:#F0E9FF; }
+
+/* на десктопе можно центрировать */
+@media (min-width: 960px){
+  .contact-chooser__sheet{ top:50%; bottom:auto; transform:translate(-50%,-50%); }
 }
